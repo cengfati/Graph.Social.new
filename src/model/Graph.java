@@ -101,17 +101,8 @@ public class Graph{
    */
   public void addVertex(Vertex pVertex){
     //TODO 04: Neues Knoten-Objekt hinzufügen.
-    boolean exists = false;
-    vertices.toFirst();
-    while(vertices.hasAccess()){
-      if(!pVertex.equals(vertices.getContent())){
-        vertices.next();
-      }else{
-        exists = true;
-      }
-    }
-    if(exists){
-      vertices.insert(pVertex);
+    if(getVertex(pVertex.getID()) == null && pVertex.getID() != null){
+      vertices.append(pVertex);
     }
   }
 

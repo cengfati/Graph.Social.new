@@ -39,6 +39,10 @@ public class MainController {
      */
     public boolean insertUser(String name){
         //TODO 05: Nutzer dem sozialen Netzwerk hinzufügen.
+        if(allUsers.getVertex(name) == null){
+            allUsers.addVertex(new Vertex(name));
+            return true;
+        }
         return false;
     }
 
@@ -49,6 +53,11 @@ public class MainController {
      */
     public boolean deleteUser(String name){
         //TODO 07: Nutzer aus dem sozialen Netzwerk entfernen.
+        Vertex remove = allUsers.getVertex(name);
+        if(remove != null){
+            allUsers.removeVertex(remove);
+            return true;
+        }
         return false;
     }
 
@@ -58,7 +67,21 @@ public class MainController {
      */
     public String[] getAllUsers(){
         //TODO 06: String-Array mit allen Nutzernamen erstellen.
-        return null;
+        List<Vertex> help = allUsers.getVertices();
+        int counter = 0;
+        help.toFirst();
+        while(help.hasAccess()) {
+            counter++;
+            help.next();
+        }
+        String[] result = new String[counter];
+        counter = 0;
+        help.toFirst();
+        for(int i = 0; help.hasAccess(); i++){
+            result[i] = help.getContent().getID();
+            help.next();
+        }
+        return result;
     }
 
     /**
@@ -68,6 +91,25 @@ public class MainController {
      */
     public String[] getAllFriendsFromUser(String name){
         //TODO 09: Freundesliste eines Nutzers als String-Array erstellen.
+        if(!allUsers.getNeighbours(new Vertex(name)).isEmpty() && allUsers.getVertex(name) != null){
+            List<Vertex> neighbours = allUsers.getNeighbours(new Vertex(name));
+            int counter = 0;
+            while(neighbours.hasAccess()){
+                counter++;
+                neighbours.next();
+            }
+
+            String[] result = new String[counter];
+            neighbours.toFirst();
+            counter = 0;
+
+            for(int i= 0; neighbours.hasAccess(); i++){
+                result[i] = neighbours.getContent().getID();
+                neighbours.next();
+            }
+
+            return result;
+        }
         return null;
     }
 
@@ -80,7 +122,13 @@ public class MainController {
      */
     public double centralityDegreeOfUser(String name){
         //TODO 10: Prozentsatz der vorhandenen Freundschaften eines Nutzers von allen möglichen Freundschaften des Nutzers.
-        return 0.125456;
+        if(allUsers.getVertex(name) != null){
+            double numberFriends = getAllFriendsFromUser(name).length;
+            double numberUser = getAllUsers().length;
+
+            return numberFriends/numberUser;
+        }
+        return -1;
     }
 
     /**
@@ -91,6 +139,11 @@ public class MainController {
      */
     public boolean befriend(String name01, String name02){
         //TODO 08: Freundschaften schließen.
+        if(allUsers.getVertex(name01) != null && allUsers.getVertex(name02) != null && allUsers.getEdge(allUsers.getVertex(name01), allUsers.getVertex(name02)) == null) {
+            Edge edge = new Edge(allUsers.getVertex(name01), allUsers.getVertex(name02), 0);
+            allUsers.addEdge(edge);
+            return true;
+        }
         return false;
     }
 
@@ -102,6 +155,11 @@ public class MainController {
      */
     public boolean unfriend(String name01, String name02){
         //TODO 11: Freundschaften beenden.
+        if(allUsers.getVertex(name01) != null && allUsers.getVertex(name02) != null && allUsers.getEdge(new Vertex(name01),new Vertex(name02)) != null){
+            Edge edge = new Edge(allUsers.getVertex(name01), allUsers.getVertex(name02), 0);
+            allUsers.removeEdge(edge);
+            return true;
+        }
         return false;
     }
 
@@ -110,9 +168,29 @@ public class MainController {
      * Die Dichte ist der Quotient aus der Anzahl aller vorhandenen Freundschaftsbeziehungen und der Anzahl der maximal möglichen Freundschaftsbeziehungen.
      * @return
      */
-    public double dense(){
+    public double dense() {
         //TODO 12: Dichte berechnen.
-        return 0.12334455676;
+        List<Edge> allEdges = allUsers.getEdges();
+        int edgeCount = 0;
+        allEdges.toFirst();
+
+        while (allEdges.hasAccess()) {
+            edgeCount++;
+            allEdges.next();
+        }
+
+        List<Vertex> pos = allUsers.getVertices();
+        double vertex = 0;
+        double vertexHelp = 0;
+        pos.toFirst();
+
+        while (pos.hasAccess()) {
+            vertex += vertexHelp;
+            vertexHelp++;
+            pos.next();
+        }
+
+        return edgeCount / vertex;
     }
 
     /**
