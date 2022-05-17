@@ -75,7 +75,6 @@ public class MainController {
             help.next();
         }
         String[] result = new String[counter];
-        counter = 0;
         help.toFirst();
         for(int i = 0; help.hasAccess(); i++){
             result[i] = help.getContent().getID();
@@ -91,7 +90,7 @@ public class MainController {
      */
     public String[] getAllFriendsFromUser(String name){
         //TODO 09: Freundesliste eines Nutzers als String-Array erstellen.
-        if(!allUsers.getNeighbours(new Vertex(name)).isEmpty() && allUsers.getVertex(name) != null){
+        if( allUsers.getVertex(name) != null){
             List<Vertex> neighbours = allUsers.getNeighbours(new Vertex(name));
             int counter = 0;
             while(neighbours.hasAccess()){
@@ -122,9 +121,9 @@ public class MainController {
      */
     public double centralityDegreeOfUser(String name){
         //TODO 10: Prozentsatz der vorhandenen Freundschaften eines Nutzers von allen möglichen Freundschaften des Nutzers.
-        if(allUsers.getVertex(name) != null){
+          if(allUsers.getVertex(name) != null){
             double numberFriends = getAllFriendsFromUser(name).length;
-            double numberUser = getAllUsers().length;
+            double numberUser = getAllUsers().length-1;
 
             return numberFriends/numberUser;
         }
@@ -155,10 +154,12 @@ public class MainController {
      */
     public boolean unfriend(String name01, String name02){
         //TODO 11: Freundschaften beenden.
-        if(allUsers.getVertex(name01) != null && allUsers.getVertex(name02) != null && allUsers.getEdge(new Vertex(name01),new Vertex(name02)) != null){
-            Edge edge = new Edge(allUsers.getVertex(name01), allUsers.getVertex(name02), 0);
+        if(allUsers.getVertex(name01) != null && allUsers.getVertex(name02) != null){
+            Edge edge = allUsers.getEdge(new Vertex(name01),new Vertex(name02));
             allUsers.removeEdge(edge);
-            return true;
+            if(edge != null){
+                return true;
+            }
         }
         return false;
     }
