@@ -206,10 +206,53 @@ public class MainController {
         Vertex user02 = allUsers.getVertex(name02);
         if(user01 != null && user02 != null){
             //TODO 13: Schreibe einen Algorithmus, der mindestens eine Verbindung von einem Nutzer über Zwischennutzer zu einem anderem Nutzer bestimmt. Happy Kopfzerbrechen!
+            List<String> list = getLinksBetweenRec(name01,name02);
+            int counter = 0;
+            while(list.hasAccess()){
+                counter++;
+            }
+            String[] result = new String[counter];
+            for(int i = 0; list.hasAccess();i++){
+                result[i] = list.getContent();
+                list.next();
+            }
         }
         return null;
     }
 
+    private List<String> getLinksBetweenRec (String name01, String name02) {
+        Vertex user01 = allUsers.getVertex(name01);
+        Vertex user02 = allUsers.getVertex(name02);
+
+        if (user01 != null && user02 != null) {
+            List<String> helpList = new List<>();
+            helpList.append(name01);
+            // at the end
+            if (user01 == user02) {
+                return helpList;
+            }
+            // recursively search for all neighbours
+            List<Vertex> allNeighbours = allUsers.getNeighbours(user01);
+            allNeighbours.toFirst();
+            while (allNeighbours.hasAccess()) {
+                // if we haven't been there
+                if (!allNeighbours.getContent().isMarked()) {
+                    allNeighbours.getContent().setMark(true);
+                    List<String> rec = getLinksBetweenRec(allNeighbours.getContent().getID(), name02);
+                    // if the recursive call returned a result
+                    if (rec != null) {
+                        helpList.concat(rec);
+                        return helpList;
+                    }
+                }
+                allNeighbours.next();
+            }
+            // no result
+            return null;
+        }
+        // faulty input
+        return null;
+    }
     /**
      * Gibt zurück, ob es keinen Knoten ohne Nachbarn gibt.
      * @return true, falls ohne einsame Knoten, sonst false.
@@ -219,7 +262,7 @@ public class MainController {
         List<Vertex> help = allUsers.getVertices();
         if(!allUsers.isEmpty()){
             while(help.hasAccess()){
-                if(allUsers.getNeighbours(help.getContent()) == null){ // Weiß nicht ob die Liste als null zählt wenn die leer ist
+                if(allUsers.getNeighbours(help.getContent()).isEmpty()){
                     return true;
                 }
                 help.next();
