@@ -236,18 +236,21 @@ public class MainController {
     public boolean testIfConnected(){
         //TODO 15: Schreibe einen Algorithmus, der ausgehend vom ersten Knoten in der Liste aller Knoten versucht, alle anderen Knoten über Kanten zu erreichen und zu markieren.
         List<Vertex> allVertices = allUsers.getVertices();
-        allVertices.toFirst();
-        //Weiter weiß ich nicht???
-
-        //Checkt ob alle erreicht wurden
-        allVertices.toFirst();
-        while(allVertices.hasAccess()){
-            if(allVertices.getContent().isMarked()){
+        //Ich habe mich eintschieden, dass wenn leer => return true
+        if(!allVertices.isEmpty()) {
+            allVertices.toFirst();
+            Vertex first = allVertices.getContent();
+            allVertices.next();
+            while(allVertices.hasAccess()) {
+                if (getLinksBetween(first.getID(), allVertices.getContent().getID()) == null){
+                    allUsers.setAllVertexMarks(false);
+                    return false;
+                }
+                allUsers.getVertex(allVertices.getContent().getID()).setMark(true);
                 allVertices.next();
-            }else{
-                return false;
             }
         }
+        allUsers.setAllVertexMarks(false);
         return true;
     }
     /**
