@@ -216,6 +216,15 @@ public class MainController {
      */
     public boolean someoneIsLonely(){
         //TODO 14: Schreibe einen Algorithmus, der explizit den von uns benutzten Aufbau der Datenstruktur Graph und ihre angebotenen Methoden so ausnutzt, dass schnell (!) iterativ geprüft werden kann, ob der Graph allUsers keine einsamen Knoten hat. Dies lässt sich mit einer einzigen Schleife prüfen.
+        List<Vertex> help = allUsers.getVertices();
+        if(!allUsers.isEmpty()){
+            while(help.hasAccess()){
+                if(allUsers.getNeighbours(help.getContent()) == null){ // Weiß nicht ob die Liste als null zählt wenn die leer ist
+                    return true;
+                }
+                help.next();
+            }
+        }
         return false;
     }
 
@@ -226,9 +235,21 @@ public class MainController {
      */
     public boolean testIfConnected(){
         //TODO 15: Schreibe einen Algorithmus, der ausgehend vom ersten Knoten in der Liste aller Knoten versucht, alle anderen Knoten über Kanten zu erreichen und zu markieren.
-        return false;
+        List<Vertex> allVertices = allUsers.getVertices();
+        allVertices.toFirst();
+        //Weiter weiß ich nicht???
+
+        //Checkt ob alle erreicht wurden
+        allVertices.toFirst();
+        while(allVertices.hasAccess()){
+            if(allVertices.getContent().isMarked()){
+                allVertices.next();
+            }else{
+                return false;
+            }
+        }
+        return true;
     }
-    
     /**
      * Gibt einen String-Array zu allen Knoten zurück, die von einem Knoten ausgehend erreichbar sind, falls die Person vorhanden ist.
      * Im Anschluss werden vor der Rückgabe alle Knoten demarkiert.
